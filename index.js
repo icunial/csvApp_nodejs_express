@@ -18,6 +18,14 @@ app.get("/", (req, res, next) => {
     });
 });
 
+// Error Handler Middleware
+app.use((req, res, next) => {
+  res.status(500).json({
+    statusCode: 500,
+    msg: `Server Internal Error`,
+  });
+});
+
 app.listen(PORT, () => {
   console.log(`Server started on port ${PORT}...`);
 });
