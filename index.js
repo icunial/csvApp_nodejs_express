@@ -19,7 +19,7 @@ app.get("/", (req, res, next) => {
       });
     })
     .catch((err) => {
-      return next();
+      next();
     });
 });
 
@@ -56,7 +56,7 @@ app.get("/download", (req, res, next) => {
 
 // Error Handler Middleware
 app.use((req, res, next) => {
-  res.status(500).json({
+  return res.status(500).json({
     statusCode: 500,
     msg: `Server Internal Error`,
   });
