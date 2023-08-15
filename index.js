@@ -28,20 +28,28 @@ app.get("/download", (req, res, next) => {
   axios
     .get("https://jsonplaceholder.typicode.com/todos")
     .then(async (results) => {
-      const csv = await converter.json2csv(results.data);
-      fs.writeFile("todos.csv", csv, (err) => {
-        if (err) {
-          throw err;
-        }
-        console.log("File Written!");
-      });
-      res.status(200).json({
-        statusCode: 200,
-        data: results.data,
-      });
+      try {
+        const csv = await converter.json2csv(results.data);
+        fs.writeFile("todos.csv", csv, (err) => {
+          if (err) {
+            throw next();
+          }
+          res.status(200).download("todos.csv", (err) => {
+            if (err) {
+              return next();
+            }
+            fs.unlink("todos.csv", (err) => {
+              if (err) {
+                return next();
+              }
+            });
+          });
+        });
+      } catch (err) {
+        return next();
+      }
     })
     .catch((err) => {
-      console.log(err);
       return next();
     });
 });
